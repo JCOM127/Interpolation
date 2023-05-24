@@ -1,4 +1,4 @@
-Title: "Interpolation Numerical Methods in Python"
+Interpolation Numerical Methods in Python
 
 Description:
 This GitHub repository contains a collection of Python codes showcasing various interpolation numerical methods. These methods leverage popular libraries such as NumPy, SymPy, Pandas, Matplotlib, and Seaborn to perform interpolation tasks efficiently and visualize the results effectively.
