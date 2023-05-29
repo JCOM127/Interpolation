@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def spline_interpolate(x, y, d):
+def spline_interpolate(x, y, d, eval_point=None):
     """
     Perform cubic or quadratic spline interpolation on the given data points.
 
@@ -9,6 +9,7 @@ def spline_interpolate(x, y, d):
     - x: 1D numpy array, the x-coordinates of the data points.
     - y: 1D numpy array, the y-coordinates of the data points.
     - d: int, the degree of the polynomial for interpolation (2 for quadratic, 3 for cubic).
+    - eval_point: float, the point to evaluate the spline polynomial.
 
     Returns:
     - coeffs: 2D numpy array, the coefficients of the spline polynomials.
@@ -89,6 +90,16 @@ def spline_interpolate(x, y, d):
         y_seg = np.polyval(np.flip(c[i, :d+1]), x_seg - x[i])
         yy[mask] = y_seg
     plt.plot(xx, yy,  label=f'polynomial of degree {d}')
+
+    if eval_point is not None:
+        for i in range(n-1):
+            if eval_point >= x[i] and eval_point <= x[i+1]:
+                eval_result = np.polyval(np.flip(c[i, :d+1]), eval_point - x[i])
+                plt.scatter(eval_point, eval_result, marker='o', color='blue', label='Eval Point')
+                print("Coefficients (ordered):", *np.flip(c[i, :d+1]), sep=", ")
+                print(f"Result at eval_point ({eval_point}):", eval_result)
+                break
+    plt.title('Cubic Spline Interpolation')
     plt.legend(loc='best')
     plt.grid()
     plt.show()
@@ -96,7 +107,8 @@ def spline_interpolate(x, y, d):
     return c
 
 
-x = np.array([100, 200, 500, 900]) 
-y = np.array([8, 15, 25, 28]) 
+x = np.array([5000, 10000, 15000, 20000, 25000])
+y = np.array([2000, 1500, 1200, 1000, 900])
+eval_point = 17000
 d = 3
-coeffs = spline_interpolate(x, y, d)
+coeffs = spline_interpolate(x, y, d, eval_point)
