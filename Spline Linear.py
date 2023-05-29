@@ -42,8 +42,9 @@ def spline_interp(x, y, eval_point=None):
 
     if eval_point is not None:
         eval_result = np.interp(eval_point, x, y)
-        plt.scatter(eval_point, eval_result, marker='o', color='green', label='Eval Point')
-
+        plt.scatter(eval_point, eval_result, marker='o', color='blue', label='Eval Point')
+        
+    plt.title('Linear Spline Interpolation')
     plt.legend(loc='best')
     plt.grid()
     plt.show()
