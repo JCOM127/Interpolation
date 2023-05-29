@@ -80,8 +80,11 @@ def spline_interpolate(x, y, d, eval_point=None):
         if d == 3:
             c[i, 3] = (z[i+1] - z[i]) / (6 * h[i])
 
+    
+    fig, ax = plt.subplots()
+      
     # Plot the results
-    plt.scatter(x, y, marker='o', label='data', color='red')
+    ax.scatter(x, y, marker='o', label='data', color='red')
     xx = np.linspace(x[0], x[-1], 100)
     yy = np.zeros_like(xx)
     for i in range(n-1):
@@ -89,19 +92,21 @@ def spline_interpolate(x, y, d, eval_point=None):
         x_seg = xx[mask]
         y_seg = np.polyval(np.flip(c[i, :d+1]), x_seg - x[i])
         yy[mask] = y_seg
-    plt.plot(xx, yy,  label=f'polynomial of degree {d}')
+    ax.plot(xx, yy,  label=f'polynomial of degree {d}')
 
     if eval_point is not None:
         for i in range(n-1):
             if eval_point >= x[i] and eval_point <= x[i+1]:
                 eval_result = np.polyval(np.flip(c[i, :d+1]), eval_point - x[i])
-                plt.scatter(eval_point, eval_result, marker='o', color='blue', label='Eval Point')
+                ax.scatter(eval_point, eval_result, marker='o', color='blue', label='Eval Point')
                 print("Coefficients (ordered):", *np.flip(c[i, :d+1]), sep=", ")
                 print(f"Result at eval_point ({eval_point}):", eval_result)
                 break
-    plt.title('Cubic Spline Interpolation')
-    plt.legend(loc='best')
-    plt.grid()
+    ax.set_title('Cubic Spline Interpolation')
+    ax.legend(loc='best')
+    ax.set_xlabel("Altitude (ft)")
+    ax.set_ylabel("Fuel in (L)")
+    ax.grid()
     plt.show()
 
     return c
