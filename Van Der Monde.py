@@ -1,52 +1,102 @@
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
 
-
-def vandermonde(x, y):
-    
+def NDD(x, y):
     """
-    Generate the Van Der Monde interpolation of the input values and plot the initial values
-    and the resulting polynomial.
+    Calculate the Newton divided differences for the given data points.
 
     Parameters:
-    x (array): x values of the data points.
-    y (array): y values of the data points.
+    - x: 1D numpy array, the x-coordinates of the data points.
+    - y: 1D numpy array, the y-coordinates of the data points.
 
     Returns:
-    None.
-
-    The function generates the Van Der Monde matrix based on the input x values and computes
-    the coefficients of the polynomial using the linear equation system solved through
-    numpy.linalg.solve. A linspace is then created based on the minimum and maximum values of x,
-    and y values are computed using the polynomial coefficients. Finally, the initial values and
-    the polynomial are plotted using matplotlib.pyplot.scatter and matplotlib.pyplot.plot functions.
+    - p: 1D numpy array, the coefficients of the Newton interpolating polynomial.
     """
-    
-    
-    
-    A=np.vander(x, increasing=False) #Order of the powers of the columns. If True, the powers increase from left to right, if False (the default) they are reversed.
-    coeff= np.linalg.solve(A, y) #Solve for coefficients
-    x_plot = np.linspace(x.min()-10, x.max()+10) #Create linspace within the min and max of x,y
-    y_plot = np.polyval(coeff, x_plot) #Create y values for the coefficients/polynomial 
-    print(coeff)
-    print(A)
-    fig, ax = plt.subplots()
-    
-    ax.scatter(x, y, color='red', label='Initial Values')
-    ax.plot(x_plot, y_plot, color='blue', label='Polynomial')
-    ax.set_xlabel("x")
-    ax.set_ylabel("y")
-    ax.set_title("Van der Monde Interpolation")
-    ax.legend()
-    ax.set_xlim(x.min()-10, x.max()+10)  # Adjusting the x axis limits
-    ax.set_ylim(y.min()-10, y.max()+10)  # Adjusting the y axis limits
-    ax.grid()
-    plt.show()
-    
-    
-    
-x = np.array([3, 3.7, 4.4])
-y = np.array([6, 10, 15])
 
-vandermonde(x,y)
+    n = len(x)
+    # Construct table and load x-y pairs in first columns
+    A = np.zeros((n, n+1))
+    A[:, 0] = x[:]
+    A[:, 1] = y[:]
+    # Fill in Divided differences
+    for j in range(2, n+1):
+        for i in range(j-1, n):
+            A[i, j] = (A[i, j-1] - A[i-1, j-1]) / (A[i, 0] - A[i-j+1, 0])
+    # Copy diagonal elements into array for returning
+    p = np.zeros(n)
+    for k in range(0, n):
+        p[k] = A[k, k+1]
+    return p
+
+
+def poly(t, x, p):
+    """
+    Evaluates the Newton interpolating polynomial at a given t using the coefficients and x-values.
+
+    Parameters:
+    - t: float, the value at which to evaluate the polynomial.
+    - x: 1D numpy array, the x-coordinates of the data points.
+    - p: 1D numpy array, the coefficients of the Newton interpolating polynomial.
+
+    Returns:
+    - out: float, the value of the polynomial at t.
+    """
+
+    n = len(x)
+    out = p[n-1]
+    for i in range(n-2, -1, -1):
+        out = out * (t - x[i]) + p[i]
+    return out
+
+
+def plot_interpolation(x, y, eval_point=None):
+    """
+    Plot the Newton interpolating polynomial and data points.
+
+    Parameters:
+    - x: 1D numpy array, the x-coordinates of the data points.
+    - y: 1D numpy array, the y-coordinates of the data points.
+    """
+
+    # Obtain polynomial coefficients using NDD function
+    coefficients = NDD(x, y)
+
+    # Evaluate polynomial at tval
+    tval = np.linspace(np.min(x) - 1, np.max(x) + 1, 100)
+    yval = poly(tval, x, coefficients)
+
+    # Evaluate polynomial at eval_point
+    if eval_point is not None:
+        eval_result = poly(eval_point, x, coefficients)
+        plt.scatter(eval_point, eval_result, color='red', marker='o', label='Eval Point')
+    
+    # Plot the polynomial and data points
+    plt.plot(tval, yval, color='green', linestyle='-', label='Polynomial')
+    plt.scatter(x, y, color='blue', marker='o', label='Data Points')
+
+    # Annotate the graph
+    plt.title('Interpolation')
+    plt.xlabel('x values')
+    plt.ylabel('y values')
+    plt.legend(loc='best')
+    plt.grid()
+
+    # Show the plot
+    plt.show()
+
+
+# Data points
+xpt = np.array([5000, 10000, 15000, 20000, 25000])
+ypt = np.array([2000, 1500, 1200, 1000, 900])
+eval_point = 17000
+
+
+# Plot the interpolation
+plot_interpolation(xpt, ypt, eval_point)
+
+# Evaluate polynomial at eval_point
+coefficients = NDD(xpt, ypt)
+print("Coefficients (ordered):", *coefficients, sep=", ")
+result = poly(eval_point, xpt, coefficients)
+print("Result at eval_point:", result)
