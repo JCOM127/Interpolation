@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-plt.rcParams['backend'] = 'TkAgg'
 
 def vandermonde(x, y, eval_point):
     """
@@ -33,17 +32,19 @@ def vandermonde(x, y, eval_point):
 
     fig, ax = plt.subplots()
     ax.scatter(x, y, color='red', label='Initial Values')
-    ax.plot(x_plot, y_plot, color='blue', label='Polynomial')
-    ax.scatter(eval_point, eval_value, color='green', label='Evaluation Point')
-    ax.set_xlabel("x")
-    ax.set_ylabel("y")
+    ax.plot(x_plot, y_plot, label='Polynomial')
+    ax.scatter(eval_point, eval_value, color='blue', label='Evaluation Point')
+    ax.set_xlabel("Altitude (ft)")
+    ax.set_ylabel("Fuel in (L)")
     ax.set_title("Van der Monde Interpolation")
     ax.legend()
-    ax.set_xlim(x.min(), x.max())
-    ax.set_ylim(y.min() - 100, y.max() + 100)
+    ax.set_xlim(x.min() - 700, x.max()+700)
+    ax.set_ylim(y.min() - 500, y.max() + 500)
     ax.grid()
+    plt.savefig("VanderMonde.png", dpi=1000)
     plt.show()
-
+    
+  
 x = np.array([5000, 10000, 15000, 20000, 25000])
 y = np.array([2000, 1500, 1200, 1000, 900])
 eval_point = 17000
