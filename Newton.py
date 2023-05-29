@@ -50,7 +50,7 @@ def poly(t, x, p):
     return out
 
 
-def plot_interpolation(x, y):
+def plot_interpolation(x, y, eval_point=None):
     """
     Plot the Newton interpolating polynomial and data points.
 
@@ -66,6 +66,11 @@ def plot_interpolation(x, y):
     tval = np.linspace(np.min(x) - 1, np.max(x) + 1, 100)
     yval = poly(tval, x, coefficients)
 
+    # Evaluate polynomial at eval_point
+    if eval_point is not None:
+        eval_result = poly(eval_point, x, coefficients)
+        plt.scatter(eval_point, eval_result, color='red', marker='o', label='Eval Point')
+    
     # Plot the polynomial and data points
     plt.plot(tval, yval, color='green', linestyle='-', label='Polynomial')
     plt.scatter(x, y, color='blue', marker='o', label='Data Points')
@@ -82,14 +87,16 @@ def plot_interpolation(x, y):
 
 
 # Data points
-xpt = np.array([100, 200, 500, 900])
-ypt = np.array([8, 15, 25, 28])
+xpt = np.array([5000, 10000, 15000, 20000, 25000])
+ypt = np.array([2000, 1500, 1200, 1000, 900])
+eval_point = 17000
+
 
 # Plot the interpolation
-plot_interpolation(xpt, ypt)
+plot_interpolation(xpt, ypt, eval_point)
 
-# Evaluate polynomial at x = 300
-x = 300
+# Evaluate polynomial at eval_point
 coefficients = NDD(xpt, ypt)
-result = poly(x, xpt, coefficients)
-print("Result at x =", x, "is", result)
+print("Coefficients (ordered):", *coefficients, sep=", ")
+result = poly(eval_point, xpt, coefficients)
+print("Result at eval_point:", result)
