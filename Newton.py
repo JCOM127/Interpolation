@@ -58,7 +58,7 @@ def plot_interpolation(x, y, eval_point=None):
     - x: 1D numpy array, the x-coordinates of the data points.
     - y: 1D numpy array, the y-coordinates of the data points.
     """
-
+    fig, ax = plt.subplots()
     # Obtain polynomial coefficients using NDD function
     coefficients = NDD(x, y)
 
@@ -69,18 +69,18 @@ def plot_interpolation(x, y, eval_point=None):
     # Evaluate polynomial at eval_point
     if eval_point is not None:
         eval_result = poly(eval_point, x, coefficients)
-        plt.scatter(eval_point, eval_result, color='red', marker='o', label='Eval Point')
+        ax.scatter(eval_point, eval_result, color='blue', marker='o', label='Eval Point')
     
     # Plot the polynomial and data points
-    plt.plot(tval, yval, color='green', linestyle='-', label='Polynomial')
-    plt.scatter(x, y, color='blue', marker='o', label='Data Points')
+    ax.plot(tval, yval, linestyle='-', label='Polynomial')
+    ax.scatter(x, y, color='red', marker='o', label='Data Points')
 
     # Annotate the graph
-    plt.title('Interpolation')
-    plt.xlabel('x values')
-    plt.ylabel('y values')
-    plt.legend(loc='best')
-    plt.grid()
+    ax.set_title('Newton Interpolation')
+    ax.set_xlabel("Altitude (ft)")
+    ax.set_ylabel("Fuel in (L)")
+    ax.legend(loc='best')
+    ax.grid()
 
     # Show the plot
     plt.show()
