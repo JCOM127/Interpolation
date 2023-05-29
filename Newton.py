@@ -84,12 +84,37 @@ def plot_interpolation(x, y, eval_point=None):
 
     # Show the plot
     plt.show()
+    
+def original_function(x):
+    # Define your original function here
+    return ((x**4)/150000000000000)-((7*x**3)/15000000000)+((83*x**2)/6000000)-((143*x)/600)+2900
 
 
+
+
+def calculate_interpolation_error(x, y, eval_point):
+    # Obtain polynomial coefficients using NDD function
+    coefficients = NDD(x, y)
+
+    # Evaluate polynomial at eval_point
+    interpolated_value = poly(eval_point, x, coefficients)
+
+    # Calculate the actual value at eval_point (assuming you have the original function)
+    actual_value = original_function(eval_point)
+
+    # Calculate the interpolation error
+    interpolation_error = abs(actual_value - interpolated_value)
+
+    return interpolation_error
+
+
+# Evaluate polynomial at eval_point and calculate interpolation error
+error = calculate_interpolation_error(xpt, ypt, eval_point)
+print("Interpolation Error:", error)
 # Data points
 xpt = np.array([5000, 10000, 15000, 20000, 25000])
 ypt = np.array([2000, 1500, 1200, 1000, 900])
-eval_point = 17000
+eval_point = 5000
 
 
 # Plot the interpolation
